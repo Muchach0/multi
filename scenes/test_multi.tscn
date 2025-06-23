@@ -1,0 +1,118 @@
+[gd_scene load_steps=12 format=3 uid="uid://btfwk1j12fmv3"]
+
+[ext_resource type="Script" uid="uid://drujhi3kyvi2u" path="res://scripts/game_logic.gd" id="1_3wjhk"]
+[ext_resource type="PackedScene" uid="uid://6o6eiydhbvdn" path="res://prefab/player_ship.tscn" id="3_68i5b"]
+[ext_resource type="PackedScene" uid="uid://cgqr0bo81lrix" path="res://components/joystick/Joystick.tscn" id="4_plucx"]
+[ext_resource type="Theme" uid="uid://c6vho6rwvu82i" path="res://assets/font/my_theme.tres" id="5_r6qr8"]
+[ext_resource type="Texture2D" uid="uid://b0dydu31a7hx3" path="res://assets/background_space.png" id="6_v8kew"]
+[ext_resource type="Material" uid="uid://5slcagwnqqij" path="res://shaders/Glowing.tres" id="7_m7xea"]
+[ext_resource type="Texture2D" uid="uid://ce3i324ntjxh3" path="res://assets/star_2.png" id="8_a54ir"]
+[ext_resource type="AudioStream" uid="uid://cv1200f5e67ib" path="res://assets/sounds/explosion.wav" id="9_tyrbv"]
+[ext_resource type="Script" uid="uid://d0ms3k0nv2mp5" path="res://scripts/NetworkManager.gd" id="10_3wjhk"]
+[ext_resource type="AudioStream" uid="uid://3i1neqbgutxm" path="res://assets/sounds/pickupCoin.wav" id="10_wl8ak"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w2sp8"]
+radius = 40.9132
+
+[node name="Shower" type="Node2D"]
+script = ExtResource("1_3wjhk")
+
+[node name="PlayerShip" parent="." instance=ExtResource("3_68i5b")]
+position = Vector2(347, 815)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Joystick" parent="CanvasLayer" instance=ExtResource("4_plucx")]
+
+[node name="GameOverScreen" type="Control" parent="CanvasLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="CanvasLayer/GameOverScreen"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("5_r6qr8")
+text = "GAME OVER"
+
+[node name="Button" type="Button" parent="CanvasLayer/GameOverScreen"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = 4.0
+offset_right = 42.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("5_r6qr8")
+text = "RESTART"
+
+[node name="LevelLabel" type="Label" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -352.5
+offset_right = 352.5
+offset_bottom = 87.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_r6qr8")
+text = "Level: 1 - Bullets: 200"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Space_background" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(352, 640)
+texture = ExtResource("6_v8kew")
+
+[node name="Star" type="Area2D" parent="." groups=["star"]]
+position = Vector2(347, 120)
+scale = Vector2(0.855469, 0.855469)
+
+[node name="StarSprite" type="Sprite2D" parent="Star"]
+material = ExtResource("7_m7xea")
+scale = Vector2(0.13, 0.13)
+texture = ExtResource("8_a54ir")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Star"]
+shape = SubResource("CircleShape2D_w2sp8")
+
+[node name="AudioManager" type="Node" parent="."]
+
+[node name="ExplosionAudioStreamPlayer" type="AudioStreamPlayer" parent="AudioManager"]
+stream = ExtResource("9_tyrbv")
+
+[node name="WinAudioStreamPlayer" type="AudioStreamPlayer" parent="AudioManager"]
+stream = ExtResource("10_wl8ak")
+
+[node name="NetworkManager" type="Node" parent="."]
+script = ExtResource("10_3wjhk")
+
+[connection signal="pressed" from="CanvasLayer/GameOverScreen/Button" to="." method="_on_button_restart_pressed"]
