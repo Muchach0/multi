@@ -14,7 +14,7 @@ LINUX_BINARY = multi_linux_export.x86_64
 
 # ========================== LOCAL CLIENT SECTION (no docker) =========================
 export-linux:
-	../Godot_v4.4.1-stable_linux.x86_64 --headless --path $(shell pwd) --export-release "Linux/X11" $(shell pwd)/builds/$(LINUX_BINARY)
+	../Godot_v4.4.1-stable_linux.x86_64 --headless --path $(shell pwd) --export-release "Linux" $(shell pwd)/builds/$(LINUX_BINARY)
 
 export-client-html:
 	../Godot_v4.4.1-stable_linux.x86_64 --headless --path $(shell pwd) --export-release "Web" $(shell pwd)/builds/client-html/index.html

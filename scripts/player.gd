@@ -22,6 +22,8 @@ var init_position = position
 
 @onready var state_machine : Node = $StateMachine
 
+var peer_id = 0
+
 func _ready() -> void:
     material.set_shader_parameter("enable_effect", false)
     # EventBus.connect("player_respawned", _on_player_respawned)

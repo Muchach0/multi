@@ -115,4 +115,8 @@ stream = ExtResource("10_wl8ak")
 [node name="NetworkManager" type="Node" parent="."]
 script = ExtResource("10_3wjhk")
 
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://6o6eiydhbvdn")
+spawn_path = NodePath("..")
+
 [connection signal="pressed" from="CanvasLayer/GameOverScreen/Button" to="." method="_on_button_restart_pressed"]
