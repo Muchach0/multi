@@ -9,10 +9,26 @@ CURRENT_BUILD_VERSION_FILE_PATH = builds/build_version.cfg
 CURRENT_VERSION = $(shell cat $(CURRENT_BUILD_VERSION_FILE_PATH))
 NEXT_VERSION = $(shell echo $$(($(CURRENT_VERSION) + 1)))
 DOCKER_IMAGE_VERSION = v$(NEXT_VERSION)
+LINUX_BINARY = multi_linux_export.x86_64
+
+
+# ========================== LOCAL CLIENT SECTION (no docker) =========================
+export-linux:
+	../Godot_v4.4.1-stable_linux.x86_64 --headless --path $(shell pwd) --export-release "Linux/X11" $(shell pwd)/builds/$(LINUX_BINARY)
 
 export-client-html:
 	../Godot_v4.4.1-stable_linux.x86_64 --headless --path $(shell pwd) --export-release "Web" $(shell pwd)/builds/client-html/index.html
 
+run-server-linux: 
+	$(shell pwd)/builds/$(LINUX_BINARY) --server
+
+run-client-linux: 
+	$(shell pwd)/builds/$(LINUX_BINARY) --local
+
+export-then-run-server-client: export-linux
+	konsole --noclose  -e $(shell pwd)/builds/$(LINUX_BINARY) --server &
+	konsole --noclose  -e $(shell pwd)/builds/$(LINUX_BINARY) --local & 
+	konsole --noclose  -e $(shell pwd)/builds/$(LINUX_BINARY) --local
 
 # ========================== CLIENT HTML DOCKER SECTION =========================
 docker-client-build-run: export-client-html ## Build client container
@@ -30,6 +46,12 @@ docker-client-rm:
 	docker image rm godot-client
 
 docker-client-update: docker-client-rm docker-client-build-run
+
+
+# ========================== SERVER HTML DOCKER SECTION =========================
+# TODO
+
+
 
 
 # =========================== GCP SECTION ===========================
