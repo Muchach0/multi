@@ -126,6 +126,7 @@ func _spawn_player(data: Dictionary): # called at .spawn()
     # # change the body and its children (recursively)
     # # to allow the player's position to be synchronized
     # # but not the visibility
+    # # More information about visibility here: https://gist.github.com/Meshiest/1274c6e2e68960a409698cf75326d4f6
     # player.get_node("CharacterBody3D").set_multiplayer_authority(id)
     player.set_multiplayer_authority(data["id"])
     player.global_position = data["position"]

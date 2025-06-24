@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://6o6eiydhbvdn"]
+[gd_scene load_steps=12 format=3 uid="uid://6o6eiydhbvdn"]
 
 [ext_resource type="Material" uid="uid://bqobf4jtv2a83" path="res://shaders/RedShader.tres" id="1_03yoi"]
 [ext_resource type="Script" uid="uid://8ij4vk5yqwtt" path="res://scripts/player.gd" id="2_vgh7x"]
@@ -33,10 +33,11 @@ animations = [{
 }]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0jxdt"]
+properties/0/path = NodePath(".:synced_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_omqnq"]
-
-[node name="PlayerShip" type="Area2D"]
+[node name="PlayerShip" type="CharacterBody2D"]
 material = ExtResource("1_03yoi")
 scale = Vector2(0.5, 0.5)
 script = ExtResource("2_vgh7x")
@@ -70,12 +71,3 @@ animation = &"idle"
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_0jxdt")
-
-[node name="Inputs" type="Node" parent="."]
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Inputs"]
-replication_config = SubResource("SceneReplicationConfig_omqnq")
-
-[connection signal="area_entered" from="." to="." method="_on_area_entered"]
-[connection signal="body_shape_entered" from="." to="." method="_on_body_shape_entered"]
-[connection signal="body_shape_exited" from="." to="." method="_on_body_shape_exited"]

@@ -2,7 +2,7 @@ extends State
 class_name PlayerWandering
 
 
-var player : Area2D
+var player : CharacterBody2D
 
 
 func Enter():

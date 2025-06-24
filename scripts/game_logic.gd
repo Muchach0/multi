@@ -5,8 +5,8 @@ extends Node2D
 
 @onready var star: Area2D = $Star
 
-@onready var player: Area2D = $PlayerShip
-@onready var init_player_position: Vector2 = player.position
+# @onready var player: Area2D = $PlayerShip
+# @onready var init_player_position: Vector2 = player.position
 
 # @onready var bullets: Node2D = $Bullets
 @onready var init_bullet_count: int = 250
@@ -51,8 +51,8 @@ func _on_button_restart_pressed() -> void:
     # bullets.queue_free()
 
     # Spawning a new player
-    player = preload("res://prefab/player_ship.tscn").instantiate()  # Create an instance of the food scene
-    player.position = init_player_position
+    var player = preload("res://prefab/player_ship.tscn").instantiate()  # Create an instance of the food scene
+    # player.position = init_player_position
     add_child.call_deferred(player)
 
     # Spawning the bullets
@@ -79,4 +79,4 @@ func finish_game(is_win:= true) -> void:
     game_over_screen.visible = true
     
     # Optionally, you can disable player controls or stop the game loop
-    player.queue_free()
+    # player.queue_free()

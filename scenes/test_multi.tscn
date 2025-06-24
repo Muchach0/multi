@@ -1,7 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://btfwk1j12fmv3"]
+[gd_scene load_steps=11 format=3 uid="uid://btfwk1j12fmv3"]
 
 [ext_resource type="Script" uid="uid://drujhi3kyvi2u" path="res://scripts/game_logic.gd" id="1_3wjhk"]
-[ext_resource type="PackedScene" uid="uid://6o6eiydhbvdn" path="res://prefab/player_ship.tscn" id="3_68i5b"]
 [ext_resource type="PackedScene" uid="uid://cgqr0bo81lrix" path="res://components/joystick/Joystick.tscn" id="4_plucx"]
 [ext_resource type="Theme" uid="uid://c6vho6rwvu82i" path="res://assets/font/my_theme.tres" id="5_r6qr8"]
 [ext_resource type="Texture2D" uid="uid://b0dydu31a7hx3" path="res://assets/background_space.png" id="6_v8kew"]
@@ -16,9 +15,6 @@ radius = 40.9132
 
 [node name="Shower" type="Node2D"]
 script = ExtResource("1_3wjhk")
-
-[node name="PlayerShip" parent="." instance=ExtResource("3_68i5b")]
-position = Vector2(347, 815)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
