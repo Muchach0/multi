@@ -1,0 +1,20 @@
+# Docker image based on ubuntu 24.10
+# Docker image for the base server
+
+FROM ubuntu:24.10
+
+WORKDIR /opt
+
+COPY builds/linux /opt
+
+# RUN  apt-get update \
+#   && apt-get install -y zip \
+#   && unzip Godot_v3.5.1-stable_linux_server.64.zip -d /opt
+
+
+# Expose the TCP port for client to contact the server
+EXPOSE 10567/tcp
+
+# Run the Godot server binary on the exported .pck files in server mode (--server)
+# ENTRYPOINT ["/opt/Godot_v3.5.1-stable_linux_server.64", "-v", "-d", "--main-pack", "/opt/bomber_linux_export.pck", "--server"]
+ENTRYPOINT ["/opt/multi_linux_export.x86_64", "--server", "--headless"]

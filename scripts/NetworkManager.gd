@@ -9,6 +9,9 @@ signal server_disconnected
 
 
 var url = "wss://multi-server.muchacho.app:443"
+# var url = "wss://multi-server-1036179882263.europe-west1.run.app:443"
+# var url = "ws://localhost:" + str(DEFAULT_PORT) # Default URL for local testing
+
 const DEFAULT_PORT = 10567
 const TIMEOUT = 1.0
 const NUMBER_OF_RETRY = 10
