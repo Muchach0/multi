@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://btfwk1j12fmv3"]
+[gd_scene load_steps=12 format=3 uid="uid://btfwk1j12fmv3"]
 
 [ext_resource type="Script" uid="uid://drujhi3kyvi2u" path="res://scripts/game_logic.gd" id="1_3wjhk"]
 [ext_resource type="PackedScene" uid="uid://cgqr0bo81lrix" path="res://components/joystick/Joystick.tscn" id="4_plucx"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ce3i324ntjxh3" path="res://assets/star_2.png" id="8_a54ir"]
 [ext_resource type="AudioStream" uid="uid://cv1200f5e67ib" path="res://assets/sounds/explosion.wav" id="9_tyrbv"]
 [ext_resource type="Script" uid="uid://d0ms3k0nv2mp5" path="res://scripts/NetworkManager.gd" id="10_3wjhk"]
+[ext_resource type="PackedScene" uid="uid://r4el6umoyi8v" path="res://prefab/bullets.tscn" id="10_ftf1t"]
 [ext_resource type="AudioStream" uid="uid://3i1neqbgutxm" path="res://assets/sounds/pickupCoin.wav" id="10_wl8ak"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_w2sp8"]
@@ -79,7 +80,26 @@ offset_bottom = 87.0
 grow_horizontal = 2
 size_flags_horizontal = 4
 theme = ExtResource("5_r6qr8")
-text = "Level: 1 - Bullets: 200"
+text = "Level: 1 - Bullets: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IsServerLabel" type="Label" parent="CanvasLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -352.5
+offset_top = -43.5
+offset_right = 352.5
+offset_bottom = 43.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+theme = ExtResource("5_r6qr8")
+text = "SERVER UI"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -89,7 +109,7 @@ position = Vector2(352, 640)
 texture = ExtResource("6_v8kew")
 
 [node name="Star" type="Area2D" parent="." groups=["star"]]
-position = Vector2(347, 120)
+position = Vector2(350, 144)
 scale = Vector2(0.855469, 0.855469)
 
 [node name="StarSprite" type="Sprite2D" parent="Star"]
@@ -114,5 +134,7 @@ script = ExtResource("10_3wjhk")
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://6o6eiydhbvdn")
 spawn_path = NodePath("..")
+
+[node name="Bullets" parent="." instance=ExtResource("10_ftf1t")]
 
 [connection signal="pressed" from="CanvasLayer/GameOverScreen/Button" to="." method="_on_button_restart_pressed"]

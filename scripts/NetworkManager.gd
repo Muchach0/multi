@@ -48,6 +48,8 @@ func _ready():
     multiplayer.connection_failed.connect(_on_connected_fail)
     multiplayer.server_disconnected.connect(_on_server_disconnected)
 
+    EventBus.connect("respawn_player", instantiate_player_scene)
+
     player_spawner.spawn_function = _spawn_player
 
     if "--local" in OS.get_cmdline_args():
@@ -67,16 +69,18 @@ func _ready():
 # This allows transfer of all desired data for each player, not only the unique ID.
 func _on_player_connected(id):
     print("NetworkManager.gd - _on_player_connected(id) - id: " + str(id))
+
     _register_player.rpc_id(id, local_player_info)
 
 
-@rpc("any_peer", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func _register_player(new_player_info):
     print("NetworkManager.gd - _register_player() - new_player_info: " + str(new_player_info))
     var new_player_id = multiplayer.get_remote_sender_id()
     players[new_player_id] = new_player_info
     instantiate_player_scene(new_player_id, new_player_info)
     print("NetworkManager.gd - _register_player(id) - players: " + str(players))
+    EventBus.emit_signal("add_player", new_player_id, new_player_info) # Emit the signal to synchronize player data across peers
     player_connected.emit(new_player_id, new_player_info)
 
 func _on_player_disconnected(id):

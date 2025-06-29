@@ -15,7 +15,7 @@ var speed: float = 200.0
 @onready var sprite_size: Vector2 = ($Sprite2D.texture.get_size() * scale) / 2
 
 var number_of_life := INIT_NUMBER_OF_LIFE
-var is_invincible: bool = false
+var is_invincible: bool = false # not used for now, but can be used later to make the player invincible for a short time after being hit.
 
 var init_position = position
 @export var synced_position := Vector2()
@@ -40,7 +40,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-    if is_multiplayer_authority():
+    if multiplayer == null or is_multiplayer_authority():
         var x_input = Input.get_axis("ui_left", "ui_right")
         var y_input = Input.get_axis("ui_up", "ui_down")
         motion = Vector2(x_input, y_input).normalized()
@@ -95,26 +95,6 @@ func _physics_process(delta: float) -> void:
     position.y = clamp(position.y, 0 + sprite_size.y, screen_size.y - sprite_size.y)
 
 
-
-
-func _on_body_shape_entered(_body_id: RID, _body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
-
-    # Player got touched by a bullet so sprite changes to sad face.
-    touching += 1
-
-    # print("player.gd - player touched by: %s" % _body_id)
-
-    if !is_invincible:
-        print("Player got touched by a bullet")
-        number_of_life -= 1
-        EventBus.emit_signal("player_hit", number_of_life)
-
-
-    if touching >= 1:
-        material.set_shader_parameter("enable_effect", true)
-        # sprite.frame = 1
-
-
 func _on_body_shape_exited(_body_id: RID, _body: Node2D, _body_shape_index: int, _local_shape_index: int) -> void:
     touching -= 1
     # When non of the bullets are touching the player,
@@ -124,14 +104,30 @@ func _on_body_shape_exited(_body_id: RID, _body: Node2D, _body_shape_index: int,
         # sprite.frame = 0
 
 
-func _on_star_area_entered(area:Area2D) -> void:
-    print("The star is touched")
+func _on_area_entered(area: Area2D) -> void:
+    # print("The star is touched 2 - area group: ", area.get_groups())
+    if "star" in area.get_groups():
+        print("The star is touched 3")
+        if multiplayer == null or is_multiplayer_authority(): # Only the authority should emit the signal.
+
+            EventBus.emit_signal("star_touched", name)
     pass # Replace with function body.
 
 
-func _on_area_entered(area: Area2D) -> void:
-    print("The star is touched 2 - area group: ", area.get_groups())
-    if "star" in area.get_groups():
-        print("The star is touched 3")
-        EventBus.emit_signal("star_touched")
+func _on_detection_area_body_shape_entered(body_rid:RID, body:Node2D, body_shape_index:int, local_shape_index:int) -> void:
+    print("PLAYER TOUCHED")
+    touching += 1
+
+    # print("player.gd - player touched by: %s" % _body_id)
+    if multiplayer == null or is_multiplayer_authority():
+        # If the player is invincible, we don't want to decrease the number of lives.
+        if not is_invincible:
+            print("Player touched by a bullet")
+            number_of_life -= 1
+            EventBus.emit_signal("player_hit", name, number_of_life)
+
+
+    if touching >= 1:
+        material.set_shader_parameter("enable_effect", true)
+        # sprite.frame = 1
     pass # Replace with function body.

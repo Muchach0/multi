@@ -14,10 +14,10 @@ const DRAW_COLOR = Color.WHITE * Color(1, 0, 0, 0.5)
 
 # const bullet_image := preload("res://assets/bullet2.png")
 
-var init_bullet_count = BULLET_COUNT
 var bullets := []
 var shape := RID()
 
+var bullets_rand_data := []
 
 
 class Bullet:
@@ -29,20 +29,39 @@ class Bullet:
     var body := RID()
 
 func _ready() -> void:
-    # EventBus.connect("player_respawned", init_game)
-    init_game()
+    EventBus.connect("bullets_init_and_start", server_init_and_start)
+    # init_game()
 
-func init_game() -> void:
+func server_init_and_start(init_bullet_count) -> void:
+    if !multiplayer.is_server():
+        return   # Only the server should initialize and start the bullets.
+    print("bullets.gd - server_init_and_start () : creating %d bullets" % init_bullet_count)
+    bullets_rand_data = []
+    
+    for bullet in init_bullet_count:
+        bullets_rand_data.append({
+            "position": Vector2(randf_range(0, get_viewport_rect().size.x), randf_range(0, get_viewport_rect().size.y) - get_viewport_rect().size.y),
+            "speed": randf_range(SPEED_MIN, SPEED_MAX)
+        })
+    
+    init_game.rpc(bullets_rand_data) # The server send the data to the clients to initialize the game (with same start value). 
+    # Note that  there is no syncinc of bullet position and speed after the game has started.
+    # This is because the bullets are not supposed to be controlled by the player, so there is no need to synchronize their state after initialization.
+    # This might an issue if the game is paused and resumed, as the bullets will not be synchronized with the server state.
+    # This is a trade-off between performance and synchronization.
+
+
+@rpc("any_peer", "reliable")
+func init_game(bullets_rand_data) -> void:
     print("bullets.gd - initiating the game")
     shape = PhysicsServer2D.circle_shape_create()
     # Set the collision shape's radius for each bullet in pixels.
     PhysicsServer2D.shape_set_data(shape, 8)
     bullets = []
-    print("bullets.gd - creating %d bullets" % init_bullet_count)
-    for _i in init_bullet_count:
+    for _i in len(bullets_rand_data):
         var bullet := Bullet.new()
         # Give each bullet its own random speed.
-        bullet.speed = randf_range(SPEED_MIN, SPEED_MAX)
+        bullet.speed = bullets_rand_data[_i]["speed"]
         bullet.body = PhysicsServer2D.body_create()
 
         PhysicsServer2D.body_set_space(bullet.body, get_world_2d().get_space())
@@ -52,10 +71,7 @@ func init_game() -> void:
 
         # Place bullets randomly on the viewport and move bullets outside the
         # play area so that they fade in nicely.
-        bullet.position = Vector2(
-            randf_range(0, get_viewport_rect().size.x),
-            randf_range(0, get_viewport_rect().size.y) - get_viewport_rect().size.y
-        )
+        bullet.position = bullets_rand_data[_i]["position"]
         var transform2d := Transform2D()
         transform2d.origin = bullet.position
         PhysicsServer2D.body_set_state(bullet.body, PhysicsServer2D.BODY_STATE_TRANSFORM, transform2d)
